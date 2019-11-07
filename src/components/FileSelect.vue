@@ -52,3 +52,10 @@ export default {
   display: none;
 }
 </style>
+
+ 
+// How to use 
+//     <!-- <p>
+//         <file-select v-model="file"></file-select>
+//       </p>
+//       <p v-if="file">{{file.name}}</p>-->

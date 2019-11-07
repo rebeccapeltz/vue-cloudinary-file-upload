@@ -3,10 +3,7 @@
     <h1>Upload to Cloudianry</h1>
     <h3>Using Axios</h3>
     <form v-on:submit.prevent="upload">
-      <!-- <p>
-        <file-select v-model="file"></file-select>
-      </p>
-      <p v-if="file">{{file.name}}</p>-->
+
       <p>
         <label for="file-input">
           <input id="file-input" type="file" multiple @change="handleFileChange($event)" />
