@@ -3,12 +3,20 @@
     <h1>Upload to Cloudianry</h1>
     <h3>Using Axios</h3>
     <form v-on:submit.prevent="upload">
-      <p>
+      <!-- <p>
         <file-select v-model="file"></file-select>
       </p>
-      <p v-if="file">{{file.name}}</p>
-      <button type="submit">Upload</button>
+      <p v-if="file">{{file.name}}</p>-->
+      <p>
+        <label for="file-input">
+          <input id="file-input" type="file" multiple @change="handleFileChange($event)" />
+        </label>
+      </p>
+      <button type="submit" v-show="filesSelected > 0">Upload</button>
     </form>
+    <p v-if="results && results.secure_url">
+      <img :src="results.secure_url" :alt="results.public_id" />
+    </p>
   </div>
 </template>
 
@@ -25,12 +33,17 @@ export default {
       results: null,
       errors: [],
       file: null,
+      filesSelected: 0,
       cloudName: "picturecloud7",
       preset: "bp_test_1",
       tags: "browser-upload"
     };
   },
   methods: {
+    handleFileChange(evt) {
+      this.file = evt.target.files[0];
+      this.filesSelected = evt.target.files.length;
+    },
     upload: function(e) {
       console.log(this.file.name);
       let reader = new FileReader();
@@ -40,10 +53,10 @@ export default {
         function() {
           // this.showPreview = true;
           // this.imagePreview = reader.result;
-          let fd = new FormData()
-          fd.append("upload_preset", this.preset)
+          let fd = new FormData();
+          fd.append("upload_preset", this.preset);
           fd.append("tags", this.tags); // Optional - add tag for image admin in Cloudinary
-          fd.append("file",  reader.result)
+          fd.append("file", reader.result);
           axios
             .post(
               `https://api.cloudinary.com/v1_1/${this.cloudName}/image/upload`,
