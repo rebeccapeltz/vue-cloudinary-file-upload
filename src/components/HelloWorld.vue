@@ -9,9 +9,6 @@
       <p v-if="file">{{file.name}}</p>
       <button type="submit">Upload</button>
     </form>
-    <!-- <form enctype="multipart/form-data">
-      <input v-model="inputfiles" @change="upload" id="upload" type="file" accept="text/html" name="files[]" size="30" />
-    </form>-->
   </div>
 </template>
 
@@ -28,7 +25,6 @@ export default {
       results: null,
       errors: [],
       file: null,
-      inputfiles: null,
       cloudName: "picturecloud7",
       preset: "bp_test_1",
       tags: "browser-upload"
