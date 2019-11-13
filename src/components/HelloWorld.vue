@@ -1,19 +1,30 @@
 <template>
   <div class="hello">
-    <h1>Upload to Cloudianry</h1>
-    <h3>Using Axios</h3>
-    <form v-on:submit.prevent="upload">
+    <!-- supply h1 and h2 headings -->
+    <h1>Upload to Cloudinary</h1>
+    <h2>Using Axios</h2>
 
+    <!-- create a form that will not submit toserver
+    using the upload function as a handler-->
+    <form v-on:submit.prevent="upload">
       <p>
         <label for="file-input">
-          <input id="file-input" type="file" multiple @change="handleFileChange($event)" />
+          <input id="file-input" type="file" @change="handleFileChange($event)" />
         </label>
       </p>
-      <button type="submit" v-show="filesSelected > 0">Upload</button>
+      <button type="submit" :disabled="filesSelected <= 0">Upload</button>
     </form>
+
+    <!-- display uploaded image if successful -->
     <p v-if="results && results.secure_url">
       <img :src="results.secure_url" :alt="results.public_id" />
     </p>
+
+    <!-- display errors if not successful -->
+    <ul v-if="errors.length > 0">
+      <!-- could add multiple attribute -->
+      <li v-for="(error,index) in error" :key="index">{{error}}</li>
+    </ul>
   </div>
 </template>
 
@@ -37,23 +48,33 @@ export default {
     };
   },
   methods: {
-    handleFileChange(evt) {
-      this.file = evt.target.files[0];
-      this.filesSelected = evt.target.files.length;
+    // function to handle file info obtained from local
+    // file system and set the file state
+    handleFileChange(e) {
+      console.log("handlefilechange", e.target.files);
+      //returns an array of files even though multiple not used
+      this.file = e.target.files[0];
+      this.filesSelected = e.target.files.length;
+
+      //clear
     },
+    // function to handle form submit
     upload: function(e) {
-      console.log(this.file.name);
+      console.log("upload", this.file.name);
       let reader = new FileReader();
 
+      // attach listener to be called when data from file
+      // is available
       reader.addEventListener(
         "load",
         function() {
-          // this.showPreview = true;
-          // this.imagePreview = reader.result;
+          console.log("file reader listener");
           let fd = new FormData();
           fd.append("upload_preset", this.preset);
           fd.append("tags", this.tags); // Optional - add tag for image admin in Cloudinary
+          // fd.append("resource_type", "video");
           fd.append("file", reader.result);
+
           axios
             .post(
               `https://api.cloudinary.com/v1_1/${this.cloudName}/image/upload`,
@@ -70,19 +91,9 @@ export default {
         }.bind(this),
         false
       );
-
-      if (this.file) {
-        /*
-        Ensure the file is an image file.
-      */
-        if (/\.(jpe?g|png|gif)$/i.test(this.file.name)) {
-          /*
-          Fire the readAsDataURL method which will read the file in and
-          upon completion fire a 'load' event which we will listen to and
-          display the image in the preview.
-        */
-          reader.readAsDataURL(this.file);
-        }
+      // call for file read if there is a file
+      if (this.file && this.file.name) {
+        reader.readAsDataURL(this.file);
       }
     }
   }
@@ -91,20 +102,21 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
+form {
+  border: solid black 1px;
+  width: 30%;
+  margin: 0 auto;
+  padding: 10px;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+button:disabled,
+button[disabled] {
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+img {
+  width: 10%;
+  margin: 0 auto;
 }
 </style>
 
-// https://alligator.io/vuejs/file-select-component/

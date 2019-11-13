@@ -12,7 +12,7 @@
         <span v-else>Select File</span>
       </div>
       <!-- Now, the file input that we hide. -->
-      <input type="file" @change="handleFileChange">
+      <input type="file" @change="handleFileChange" />
     </label>
   </div>
 </template>
@@ -39,7 +39,7 @@ export default {
   padding: 1rem;
 
   color: white;
-  background-color: #2EA169;
+  background-color: #2ea169;
 
   border-radius: 0.3rem;
 
@@ -52,10 +52,10 @@ export default {
   display: none;
 }
 </style>
-
+// https://alligator.io/vuejs/file-select-component/
  
-// How to use 
-//     <!-- <p>
-//         <file-select v-model="file"></file-select>
-//       </p>
-//       <p v-if="file">{{file.name}}</p>-->
+How to use 
+    <!-- <p>
+        <file-select v-model="file"></file-select>
+      </p>
+      <p v-if="file">{{file.name}}</p>-->
