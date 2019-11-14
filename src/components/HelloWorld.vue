@@ -16,7 +16,7 @@
     </form>
 
     <!-- display uploaded image if successful -->
-    <p v-if="results && results.secure_url">
+    <p v-if="results && results.secure_url && assetType === 'image'">
       <img :src="results.secure_url" :alt="results.public_id" />
     </p>
 
@@ -40,7 +40,8 @@ export default {
       filesSelected: 0,
       cloudName: "picturecloud7",
       preset: "bp_test_1",
-      tags: "browser-upload"
+      tags: "browser-upload",
+      assetType: null
     };
   },
   methods: {
@@ -68,28 +69,33 @@ export default {
           let fd = new FormData();
           fd.append("upload_preset", this.preset);
           fd.append("tags", this.tags); // Optional - add tag for image admin in Cloudinary
-          fd.append("resource_type","auto")
+          fd.append("resource_type", "auto");
           fd.append("file", reader.result);
+          this.assetType = reader.result.startsWith("data:image") ? "image" : (reader.result.startsWith("data:video") ? "video" : "raw")
 
-          let cloudinaryUploadURL = `https://api.cloudinary.com/v1_1/${this.cloudName}/image/upload`;
 
-           let requestObj = {
+
+          let cloudinaryUploadURL = `https://api.cloudinary.com/v1_1/${this.cloudName}/upload`;
+
+          let requestObj = {
             url: cloudinaryUploadURL,
             method: "POST",
             data: fd
           };
           axios(requestObj)
-          .then(response => {
-            this.results = response.data;
-            console.log(this.results);
-          })
-          .catch(error => {
-            this.errors.push(error);
-            console.log(this.error);
-          });
+            .then(response => {
+              this.results = response.data;
+              console.log(this.results);
+            })
+            .catch(error => {
+              this.errors.push(error);
+              console.log(this.error);
+            });
         }.bind(this),
         false
       );
+      // clear asset type flag
+      this.assetType = null
       // call for file read if there is a file
       if (this.file && this.file.name) {
         reader.readAsDataURL(this.file);
