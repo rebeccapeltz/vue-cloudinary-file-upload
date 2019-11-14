@@ -6,7 +6,7 @@
 
     <!-- create a form that will not submit toserver
     using the upload function as a handler-->
-    <form v-on:submit.prevent="upload">
+    <form v-on:submit.prevent="upload" enctype="multipart/form-data">
       <p>
         <label for="file-input">
           <input id="file-input" type="file" @change="handleFileChange($event)" />
@@ -23,19 +23,15 @@
     <!-- display errors if not successful -->
     <ul v-if="errors.length > 0">
       <!-- could add multiple attribute -->
-      <li v-for="(error,index) in error" :key="index">{{error}}</li>
+      <li v-for="(error,index) in errors" :key="index">{{error}}</li>
     </ul>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import FileSelect from "./FileSelect.vue";
 export default {
   name: "HelloWorld",
-  components: {
-    FileSelect
-  },
   data() {
     return {
       results: null,
@@ -72,22 +68,25 @@ export default {
           let fd = new FormData();
           fd.append("upload_preset", this.preset);
           fd.append("tags", this.tags); // Optional - add tag for image admin in Cloudinary
-          // fd.append("resource_type", "video");
+          fd.append("resource_type","auto")
           fd.append("file", reader.result);
 
-          axios
-            .post(
-              `https://api.cloudinary.com/v1_1/${this.cloudName}/image/upload`,
-              fd
-            )
-            .then(response => {
-              this.results = response.data;
-              console.log(this.results);
-            })
-            .catch(error => {
-              this.errors.push(error);
-              console.log(this.error);
-            });
+          let cloudinaryUploadURL = `https://api.cloudinary.com/v1_1/${this.cloudName}/image/upload`;
+
+           let requestObj = {
+            url: cloudinaryUploadURL,
+            method: "POST",
+            data: fd
+          };
+          axios(requestObj)
+          .then(response => {
+            this.results = response.data;
+            console.log(this.results);
+          })
+          .catch(error => {
+            this.errors.push(error);
+            console.log(this.error);
+          });
         }.bind(this),
         false
       );
