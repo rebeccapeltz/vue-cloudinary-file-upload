@@ -129,8 +129,18 @@ form {
   margin: 0 auto;
   padding: 10px;
 }
+button {
+  width: 100px;
+  height: auto;
+  background-color:blue;
+  color: white;
+  font-weight: bold;
+  border-radius: 10px;
+}
 button:disabled,
 button[disabled] {
+  width: 70px;
+  height: auto;
   border: 1px solid #999999;
   background-color: #cccccc;
   color: #666666;
