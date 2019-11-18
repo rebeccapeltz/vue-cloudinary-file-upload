@@ -9,7 +9,7 @@
     <form v-on:submit.prevent="upload" enctype="multipart/form-data">
       <p>
         <label for="file-input">
-          <input id="file-input" type="file" @change="handleFileChange($event)" />
+          <input id="file-input" type="file" accept="image/png, image/jpeg" @change="handleFileChange($event)" />
         </label>
       </p>
       <button type="submit" :disabled="filesSelected <= 0">Upload</button>
@@ -29,6 +29,8 @@
     >
       <source :src="results.secure_url" type="video/mp4" />Your browser does not support the video tag.
     </video>
+
+    <textarea v-if="results && results.secure_url && assetType === 'raw'" rows="4" cols="50"></textarea>
 
     <!-- display errors if not successful -->
     <ul v-if="errors.length > 0">
@@ -98,6 +100,8 @@ export default {
             .then(response => {
               this.results = response.data;
               console.log(this.results);
+              // if this is raw data you need to fetch it from cloudinary and 
+              // do something to it to make it displayable - maybe only allow json
             })
             .catch(error => {
               this.errors.push(error);
