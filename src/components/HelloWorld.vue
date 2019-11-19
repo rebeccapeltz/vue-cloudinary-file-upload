@@ -1,42 +1,45 @@
 <template>
   <div class="hello">
     <!-- supply h1 and h2 headings -->
-    <h1>Upload to Cloudinary</h1>
-    <h2>Using Axios</h2>
+    <h2>Upload an Image to Cloudinary</h2>
+    <!-- create a form that will not submit to a server but will prevent submit and
+    use the upload function as a handle-->
+    <form v-on:submit.prevent="upload">
+          
+      <!-- allow the user to select an image file and when they have selected it call a funtion to handle this event -->
+      <label for="cloudname-input">Cloud Name:</label> 
+      <input id="cloudname-input" v-model="cloudName" placeholder="cloud_name" />
+  
+      <!-- allow the user to select an image file and when they have selected it call a funtion to handle this event -->
+      <label for="preset-input">Preset:</label>
+      <input id="preset-input" v-model="preset" placeholder="preset" />
+     
+      <!-- allow the user to select an image file and when they have selected it call a funtion to handle this event -->
+      <label for="file-input">Upload:</label>
+      <input
+        id="file-input"
+        type="file"
+        accept="image/png, image/jpeg"
+        @change="handleFileChange($event)"
+      />
 
-    <!-- create a form that will not submit toserver
-    using the upload function as a handler-->
-    <form v-on:submit.prevent="upload" enctype="multipart/form-data">
-      <p>
-        <label for="file-input">
-          <input id="file-input" type="file" accept="image/png, image/jpeg" @change="handleFileChange($event)" />
-        </label>
-      </p>
-      <button type="submit" :disabled="filesSelected <= 0">Upload</button>
+      <!-- sumbit button is disabled until a file is selected -->
+      <button type="submit" :disabled="filesSelected < 1">Upload</button>
+  
     </form>
 
     <!-- display uploaded image if successful -->
-    <p v-if="results && results.secure_url && assetType === 'image'">
+    <section v-if="results && results.secure_url">
       <img :src="results.secure_url" :alt="results.public_id" />
-    </p>
-
-    <!-- display uploaded image if successful -->
-    <video
-      v-if="results && results.secure_url && assetType === 'video'"
-      width="320"
-      height="240"
-      controls
-    >
-      <source :src="results.secure_url" type="video/mp4" />Your browser does not support the video tag.
-    </video>
-
-    <textarea v-if="results && results.secure_url && assetType === 'raw'" rows="4" cols="50"></textarea>
+    </section>
 
     <!-- display errors if not successful -->
+    <section>
     <ul v-if="errors.length > 0">
-      <!-- could add multiple attribute -->
       <li v-for="(error,index) in errors" :key="index">{{error}}</li>
     </ul>
+    </section>
+
   </div>
 </template>
 
@@ -50,25 +53,22 @@ export default {
       errors: [],
       file: null,
       filesSelected: 0,
-      cloudName: "picturecloud7",
-      preset: "bp_test_1",
-      tags: "browser-upload",
-      assetType: null
+      cloudName: "",
+      preset: "",
+      tags: "browser-upload"
     };
   },
   methods: {
     // function to handle file info obtained from local
     // file system and set the file state
-    handleFileChange(e) {
-      console.log("handlefilechange", e.target.files);
+    handleFileChange: function(event) {
+      console.log("handlefilechange", event.target.files);
       //returns an array of files even though multiple not used
-      this.file = e.target.files[0];
-      this.filesSelected = e.target.files.length;
-
-      //clear
+      this.file = event.target.files[0];
+      this.filesSelected = event.target.files.length;
     },
     // function to handle form submit
-    upload: function(e) {
+    upload: function(event) {
       console.log("upload", this.file.name);
       let reader = new FileReader();
 
@@ -81,13 +81,7 @@ export default {
           let fd = new FormData();
           fd.append("upload_preset", this.preset);
           fd.append("tags", this.tags); // Optional - add tag for image admin in Cloudinary
-          fd.append("resource_type", "auto");
           fd.append("file", reader.result);
-          this.assetType = reader.result.startsWith("data:image")
-            ? "image"
-            : reader.result.startsWith("data:video")
-            ? "video"
-            : "raw";
 
           let cloudinaryUploadURL = `https://api.cloudinary.com/v1_1/${this.cloudName}/upload`;
 
@@ -100,8 +94,6 @@ export default {
             .then(response => {
               this.results = response.data;
               console.log(this.results);
-              // if this is raw data you need to fetch it from cloudinary and 
-              // do something to it to make it displayable - maybe only allow json
             })
             .catch(error => {
               this.errors.push(error);
@@ -110,8 +102,6 @@ export default {
         }.bind(this),
         false
       );
-      // clear asset type flag
-      this.assetType = null;
       // call for file read if there is a file
       if (this.file && this.file.name) {
         reader.readAsDataURL(this.file);
@@ -124,30 +114,75 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 form {
-  border: solid black 1px;
-  width: 30%;
-  margin: 0 auto;
-  padding: 10px;
+  display: grid;
+  padding: 1em;
+  background: #f9f9f9;
+  border: 1px solid #c1c1c1;
+  margin: 2rem auto 0 auto;
+  max-width: 600px;
+  padding: 1em;
 }
+form input {
+  background: #fff;
+  border: 1px solid #9c9c9c;
+}
+form button {
+  background-color: blue;
+  color: white;
+  font-size: 1em;
+  font-weight: bold;
+  padding: 0.7em;
+  width: 100%;
+  border: 0;
+}
+form button:hover {
+  background: gold;
+  color: black;
+}
+
+label {
+  padding: 0.5em 0.5em 0.5em 0;
+}
+
+input {
+  padding: 0.7em;
+  margin-bottom: 0.5rem;
+}
+input:focus {
+  outline: 3px solid gold;
+}
+
+@media (min-width: 400px) {
+  form {
+    grid-template-columns: 200px 1fr;
+    grid-gap: 16px;
+  }
+
+  label {
+    text-align: right;
+    grid-column: 1 / 2;
+  }
+
+  input,
+  button {
+    grid-column: 2 / 3;
+  }
+}
+
 button {
-  width: 100px;
-  height: auto;
-  background-color:blue;
+  background-color: blue;
   color: white;
   font-weight: bold;
   border-radius: 10px;
 }
-button:disabled,
-button[disabled] {
-  width: 70px;
-  height: auto;
+form button:disabled,
+form button[disabled] {
   border: 1px solid #999999;
   background-color: #cccccc;
   color: #666666;
 }
-img {
-  width: 10%;
-  margin: 0 auto;
+section {
+  margin: 10px 0;
 }
 </style>
 
