@@ -8,11 +8,11 @@
           
       <!-- allow the user to select an image file and when they have selected it call a funtion to handle this event -->
       <label for="cloudname-input">Cloud Name:</label> 
-      <input id="cloudname-input" v-model="cloudName" placeholder="cloud_name" />
+      <input id="cloudname-input" v-model="cloudName" placeholder="Enter cloud_name from dashboard" />
   
       <!-- allow the user to select an image file and when they have selected it call a funtion to handle this event -->
       <label for="preset-input">Preset:</label>
-      <input id="preset-input" v-model="preset" placeholder="preset" />
+      <input id="preset-input" v-model="preset" placeholder="Enter preset from upload settings" />
      
       <!-- allow the user to select an image file and when they have selected it call a funtion to handle this event -->
       <label for="file-input">Upload:</label>
