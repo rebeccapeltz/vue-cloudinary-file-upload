@@ -69,6 +69,15 @@ export default {
     },
     // function to handle form submit
     upload: function(event) {
+      //no need to look at selected files if there is no cloudname or preset
+      if (this.preset.length < 1 || this.cloudName.length < 1){
+        this.errors.push("You must enter a cloud name and preset to upload")
+        return
+      }
+      // clear errors
+      else {
+        this.errors = []
+      }
       console.log("upload", this.file.name);
       let reader = new FileReader();
 
