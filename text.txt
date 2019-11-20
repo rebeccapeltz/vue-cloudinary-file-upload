@@ -1,0 +1,83 @@
+ Pull up the finished app in the browser
+
+the cloud_name and preset inputs.
+
+
+
+
+Highlight the submit button.
+
+
+
+
+
+
+
+
+Choose and open the cloudinary logo image.
+
+
+Enter a cloud_name and preset in the form.
+
+
+
+Highlight the file system selections to see that you can only choose images.
+
+
+
+
+
+
+Highlight the name of the file.
+
+
+
+
+Highlight the submit button.
+
+
+
+Highlight the logo.
+
+
+Open dev tools and then open the response object.  
+
+
+Click on the ellipses to open the secure URL.
+
+
+----------------
+
+In this app we’ll provide a form that allows the user to select a file from their hard drive and upload to the cloud.  
+
+
+We’ll talk more in a bit about authorization for front end app with Cloudinary and where to obtain these values.  The inputs for cloudname and preset provide the credentials needed to execute the upload.
+
+
+The submit button is disabled.  
+
+We’ll enable the submit button once the file has been chosen by the user. This will be evident when the name of the file appears next to the submit button. 
+
+
+
+If  you try to submit with just the file you’ll get a message that you need a cloud_name and preset to continue.
+
+I’ll enter a cloudname and preset that I have already established.  You’ll get a cloudname for free when you register for  Cloudinary account.  We’ll be describing how to create a preset shortly.
+
+Let’s start by choosing an image from the file system.  I’m going to choose the Cloudinary logo.  I’m only allowed to choose jpeg and png file.  This is because for this app I want to restrict the user to uploading only images.  It’s possible to upload video and raw files as well and all files in my file system would be selectable if I removed an “accepct” attribute form my HTML code.
+
+
+
+Notice that we can now see the file name we’ve selected.
+This functionality doesn’t require any code on our part and is provided by the HTML attribute `type=”file”` which is found in all modern browsers.
+
+The submit button is now enabled and I’ll click on it.
+
+
+The cloudinary logo is rendered on my page.  Let’s take a quick look at the console in Chrome Dev tools as there is some logging in this app. 
+
+This will give us some quick insight into where I got the URL to display the cloudinary image after the upload.  
+
+You can see that the response object contains the URLs that access the image I just uploaded.
+
+The URL from the response has been bound to the image tag to render the uploaded image without having to make a second call to get the image.

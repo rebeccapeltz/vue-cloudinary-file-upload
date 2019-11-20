@@ -1,19 +1,22 @@
 <template>
   <div class="hello">
-    <!-- supply h1 and h2 headings -->
+    <!-- supply h2 heading -->
     <h2>Upload an Image to Cloudinary</h2>
+    <div v-show="showProgress">
+      <progress-bar :options="options" :value="progress" />
+    </div>
+
     <!-- create a form that will not submit to a server but will prevent submit and
     use the upload function as a handle-->
     <form v-on:submit.prevent="upload">
-          
-      <!-- allow the user to select an image file and when they have selected it call a funtion to handle this event -->
-      <label for="cloudname-input">Cloud Name:</label> 
+      <!-- bind cloud-name to the input -->
+      <label for="cloudname-input">Cloud Name:</label>
       <input id="cloudname-input" v-model="cloudName" placeholder="Enter cloud_name from dashboard" />
-  
-      <!-- allow the user to select an image file and when they have selected it call a funtion to handle this event -->
+
+      <!-- bind preset to the input -->
       <label for="preset-input">Preset:</label>
       <input id="preset-input" v-model="preset" placeholder="Enter preset from upload settings" />
-     
+
       <!-- allow the user to select an image file and when they have selected it call a funtion to handle this event -->
       <label for="file-input">Upload:</label>
       <input
@@ -25,7 +28,6 @@
 
       <!-- sumbit button is disabled until a file is selected -->
       <button type="submit" :disabled="filesSelected < 1">Upload</button>
-  
     </form>
 
     <!-- display uploaded image if successful -->
@@ -35,18 +37,21 @@
 
     <!-- display errors if not successful -->
     <section>
-    <ul v-if="errors.length > 0">
-      <li v-for="(error,index) in errors" :key="index">{{error}}</li>
-    </ul>
+      <ul v-if="errors.length > 0">
+        <li v-for="(error,index) in errors" :key="index">{{error}}</li>
+      </ul>
     </section>
-
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import ProgressBar from "vuejs-progress-bar";
 export default {
   name: "HelloWorld",
+  components: {
+    ProgressBar
+  },
   data() {
     return {
       results: null,
@@ -55,7 +60,28 @@ export default {
       filesSelected: 0,
       cloudName: "",
       preset: "",
-      tags: "browser-upload"
+      tags: "browser-upload",
+      progress: 0,
+      showProgress: false,
+      options: {
+        text: {
+          shadowColor: "black",
+          fontSize: 14,
+          fontFamily: "Helvetica",
+          dynamicPosition: true
+        },
+        progress: {
+          color: "#E8C401",
+          backgroundColor: "#000000"
+        },
+        layout: {
+          height: 35,
+          width: 140,
+          type: "line",
+          progressPadding: 0,
+          verticalTextAlign: 63
+        }
+      }
     };
   },
   methods: {
@@ -70,13 +96,13 @@ export default {
     // function to handle form submit
     upload: function(event) {
       //no need to look at selected files if there is no cloudname or preset
-      if (this.preset.length < 1 || this.cloudName.length < 1){
-        this.errors.push("You must enter a cloud name and preset to upload")
-        return
+      if (this.preset.length < 1 || this.cloudName.length < 1) {
+        this.errors.push("You must enter a cloud name and preset to upload");
+        return;
       }
       // clear errors
       else {
-        this.errors = []
+        this.errors = [];
       }
       console.log("upload", this.file.name);
       let reader = new FileReader();
@@ -97,16 +123,31 @@ export default {
           let requestObj = {
             url: cloudinaryUploadURL,
             method: "POST",
-            data: fd
+            data: fd,
+            onUploadProgress: function(progressEvent) {
+              console.log("progress", progressEvent);
+              this.progress = Math.round(
+                (progressEvent.loaded * 100.0) / progressEvent.total
+              );
+              console.log(this.progress);
+            }.bind(this)
           };
+          //show progress bar at beginning of post
+          this.showProgress = true;
           axios(requestObj)
             .then(response => {
               this.results = response.data;
               console.log(this.results);
+              console.log("public_id", this.results.public_id);
             })
             .catch(error => {
               this.errors.push(error);
               console.log(this.error);
+            })
+            .finally(() => {
+              setTimeout(function() {
+                this.showProgress = false
+              }.bind(this), 1000);
             });
         }.bind(this),
         false

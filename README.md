@@ -8,3 +8,7 @@
 https://cloudinary.com/documentation/vue_image_and_video_upload
 
 https://codepen.io/team/Cloudinary/pen/QgpyOK
+
+Progress bar
+https://www.npmjs.com/package/vuejs-progress-bar
+
