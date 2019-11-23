@@ -11,13 +11,13 @@
     <form v-on:submit.prevent="upload">
       <!-- bind cloud-name to the input -->
       <label for="cloudname-input">Cloud Name:</label>
-      <input id="cloudname-input" v-model="cloudName" placeholder="Enter cloud_name from dashboard" />
-
+      <input id="cloudname-input" v-model="cloudName" 
+      placeholder="Enter cloud_name from dashboard" />
       <!-- bind preset to the input -->
       <label for="preset-input">Preset:</label>
       <input id="preset-input" v-model="preset" placeholder="Enter preset from upload settings" />
-
-      <!-- allow the user to select an image file and when they have selected it call a funtion to handle this event -->
+      <!-- allow the user to select an image file and when they have selected it call a function 
+      to handle this event -->
       <label for="file-input">Upload:</label>
       <input
         id="file-input"
@@ -25,8 +25,7 @@
         accept="image/png, image/jpeg"
         @change="handleFileChange($event)"
       />
-
-      <!-- sumbit button is disabled until a file is selected -->
+      <!-- submit button is disabled until a file is selected -->
       <button type="submit" :disabled="filesSelected < 1">Upload</button>
     </form>
 
@@ -53,17 +52,7 @@ export default {
     ProgressBar
   },
   data() {
-    return {
-      results: null,
-      errors: [],
-      file: null,
-      filesSelected: 0,
-      cloudName: "",
-      preset: "",
-      tags: "browser-upload",
-      progress: 0,
-      showProgress: false,
-      options: {
+    let progressBarOptions = {
         text: {
           shadowColor: "black",
           fontSize: 14,
@@ -82,7 +71,18 @@ export default {
           verticalTextAlign: 63
         }
       }
-    };
+    return {
+      results: null,
+      errors: [],
+      file: null,
+      filesSelected: 0,
+      cloudName: "",
+      preset: "",
+      tags: "browser-upload",
+      progress: 0,
+      showProgress: false,
+      options: progressBarOptions
+    }
   },
   methods: {
     // function to handle file info obtained from local
@@ -233,6 +233,10 @@ form button[disabled] {
 }
 section {
   margin: 10px 0;
+}
+img {
+  max-width: 300px;
+  height: auto;
 }
 </style>
 
