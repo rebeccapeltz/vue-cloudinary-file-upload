@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <img width="5%" src="./assets/logo.png">
+    <img class="vue-logo" src="./assets/logo.png">
     <HelloWorld msg="Hello Vue in CodeSandbox!" />
   </div>
 </template>
@@ -23,6 +23,10 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 10px;
+}
+.vue-logo {
+  width: 30px;
+  height: auto;
 }
 </style>

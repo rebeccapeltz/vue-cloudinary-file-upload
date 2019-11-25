@@ -225,6 +225,9 @@ button {
   font-weight: bold;
   border-radius: 10px;
 }
+button:focus {
+  outline: none;
+}
 form button:disabled,
 form button[disabled] {
   border: 1px solid #999999;
