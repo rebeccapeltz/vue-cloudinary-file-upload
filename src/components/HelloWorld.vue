@@ -11,13 +11,12 @@
     <form v-on:submit.prevent="upload">
       <!-- bind cloud-name to the input -->
       <label for="cloudname-input">Cloud Name:</label>
-      <input id="cloudname-input" v-model="cloudName" 
-      placeholder="Enter cloud_name from dashboard" />
+      <input id="cloudname-input" v-model="cloudName" placeholder="Enter cloud_name from dashboard" />
       <!-- bind preset to the input -->
       <label for="preset-input">Preset:</label>
       <input id="preset-input" v-model="preset" placeholder="Enter preset from upload settings" />
       <!-- allow the user to select an image file and when they have selected it call a function 
-      to handle this event -->
+      to handle this event-->
       <label for="file-input">Upload:</label>
       <input
         id="file-input"
@@ -52,25 +51,25 @@ export default {
     ProgressBar
   },
   data() {
-    let progressBarOptions = {
-        text: {
-          shadowColor: "black",
-          fontSize: 14,
-          fontFamily: "Helvetica",
-          dynamicPosition: true
-        },
-        progress: {
-          color: "#E8C401",
-          backgroundColor: "#000000"
-        },
-        layout: {
-          height: 35,
-          width: 140,
-          type: "line",
-          progressPadding: 0,
-          verticalTextAlign: 63
-        }
+    const progressBarOptions = {
+      text: {
+        shadowColor: "black",
+        fontSize: 14,
+        fontFamily: "Helvetica",
+        dynamicPosition: true
+      },
+      progress: {
+        color: "#E8C401",
+        backgroundColor: "#000000"
+      },
+      layout: {
+        height: 35,
+        width: 140,
+        type: "line",
+        progressPadding: 0,
+        verticalTextAlign: 63
       }
+    };
     return {
       results: null,
       errors: [],
@@ -81,8 +80,10 @@ export default {
       tags: "browser-upload",
       progress: 0,
       showProgress: false,
-      options: progressBarOptions
-    }
+      options: progressBarOptions,
+      fileContents: null,
+      formData: null
+    };
   },
   methods: {
     // function to handle file info obtained from local
@@ -92,6 +93,12 @@ export default {
       //returns an array of files even though multiple not used
       this.file = event.target.files[0];
       this.filesSelected = event.target.files.length;
+    },
+    prepareFormData: function() {
+      this.formData = new FormData();
+      this.formData.append("upload_preset", this.preset);
+      this.formData.append("tags", this.tags); // Optional - add tag for image admin in Cloudinary
+      this.formData.append("file", this.fileContents);
     },
     // function to handle form submit
     upload: function(event) {
@@ -113,17 +120,14 @@ export default {
         "load",
         function() {
           console.log("file reader listener");
-          let fd = new FormData();
-          fd.append("upload_preset", this.preset);
-          fd.append("tags", this.tags); // Optional - add tag for image admin in Cloudinary
-          fd.append("file", reader.result);
-
+          this.fileContents = reader.result
+          this.prepareFormData();
           let cloudinaryUploadURL = `https://api.cloudinary.com/v1_1/${this.cloudName}/upload`;
 
           let requestObj = {
             url: cloudinaryUploadURL,
             method: "POST",
-            data: fd,
+            data: this.formData,
             onUploadProgress: function(progressEvent) {
               console.log("progress", progressEvent);
               this.progress = Math.round(
@@ -145,9 +149,12 @@ export default {
               console.log(this.error);
             })
             .finally(() => {
-              setTimeout(function() {
-                this.showProgress = false
-              }.bind(this), 1000);
+              setTimeout(
+                function() {
+                  this.showProgress = false;
+                }.bind(this),
+                1000
+              );
             });
         }.bind(this),
         false
