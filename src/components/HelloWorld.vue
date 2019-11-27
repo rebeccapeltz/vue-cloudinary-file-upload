@@ -112,18 +112,15 @@ export default {
         this.errors = [];
       }
       console.log("upload", this.file.name);
-      let reader = new FileReader();
 
+      let reader = new FileReader();
       // attach listener to be called when data from file
-      // is available
       reader.addEventListener(
         "load",
         function() {
-          console.log("file reader listener");
-          this.fileContents = reader.result
+          this.fileContents = reader.result;
           this.prepareFormData();
           let cloudinaryUploadURL = `https://api.cloudinary.com/v1_1/${this.cloudName}/upload`;
-
           let requestObj = {
             url: cloudinaryUploadURL,
             method: "POST",
@@ -134,6 +131,7 @@ export default {
                 (progressEvent.loaded * 100.0) / progressEvent.total
               );
               console.log(this.progress);
+            //bind "this" to access vue state during callback
             }.bind(this)
           };
           //show progress bar at beginning of post
