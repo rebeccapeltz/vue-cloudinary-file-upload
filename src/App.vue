@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <img class="vue-logo" src="./assets/logo.png">
-    <cl-upload />
+    <img class="vue-logo" src="./assets/logo.png" />
+    <cl-upload class="align" />
   </div>
 </template>
 
@@ -11,7 +11,7 @@ import CloudinaryUpload from "./components/CloudinaryUpload";
 export default {
   name: "App",
   components: {
-    "cl-upload":CloudinaryUpload
+    "cl-upload": CloudinaryUpload
   }
 };
 </script>
@@ -23,7 +23,12 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 10px;
+}
+
+body {
+  display: grid;
+  place-items: center;
+  height: 80vh;
 }
 .vue-logo {
   width: 50px;
