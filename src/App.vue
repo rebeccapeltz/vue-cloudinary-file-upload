@@ -1,17 +1,17 @@
 <template>
   <div id="app">
     <img class="vue-logo" src="./assets/logo.png">
-    <HelloWorld msg="Hello Vue in CodeSandbox!" />
+    <cl-upload />
   </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld";
+import CloudinaryUpload from "./components/CloudinaryUpload";
 
 export default {
   name: "App",
   components: {
-    HelloWorld
+    "cl-upload":CloudinaryUpload
   }
 };
 </script>
@@ -26,7 +26,7 @@ export default {
   margin-top: 10px;
 }
 .vue-logo {
-  width: 30px;
+  width: 50px;
   height: auto;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div class="cl-upload">
     <!-- supply h2 heading -->
     <h2>Upload an Image to Cloudinary</h2>
     <div v-show="showProgress">
@@ -46,7 +46,7 @@
 import axios from "axios";
 import ProgressBar from "vuejs-progress-bar";
 export default {
-  name: "HelloWorld",
+  name: "CloudinaryUpload",
   components: {
     ProgressBar
   },
@@ -174,7 +174,7 @@ form {
   background: #f9f9f9;
   border: 1px solid #c1c1c1;
   margin: 2rem auto 0 auto;
-  max-width: 600px;
+  max-width: 500px;
   padding: 1em;
 }
 form input {
@@ -209,7 +209,7 @@ input:focus {
 
 @media (min-width: 400px) {
   form {
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: 150px 1fr;
     grid-gap: 16px;
   }
 
